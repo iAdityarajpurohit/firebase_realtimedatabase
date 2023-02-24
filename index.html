@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Realtime Database Example</h2>
+        <form>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name"><br>
+
+          <label for="rollno">RollNO:</label>
+          <input type="number" id="rollno" name="rollno"><br>
+      
+          <label for="email">Email:</label>
+          <input type="text" id="email" name="email"><br>
+      
+          <label for="message">Message:</label>
+          <textarea id="message" name="message"></textarea><br>
+      
+          <button class="button" type="submit" id="submitBtn">Submit</button>
+          <button class="button" type="button" id="updateBtn">Update</button>
+          <button class="button" type="button" id="deleteBtn">Delete</button>
+          <button class="button" type="button" id="selectBtn">Select</button>
+        </form>
+    
+      </div>
+      <script type="module">
+        // Initialize Firebase
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+
+  import { getDatabase,get,ref,set,child,update,remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+  import { getAnalytics} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAfK2Uve6WxTTrWa0jBbeaaGoQoi9yKP-8",
+    authDomain: "fir-projct-8f9b0.firebaseapp.com",
+    databaseURL: "https://fir-projct-8f9b0-default-rtdb.firebaseio.com/",
+    projectId: "fir-projct-8f9b0",
+    storageBucket: "fir-projct-8f9b0.appspot.com",
+    messagingSenderId: "794842241885",
+    appId: "1:794842241885:web:e7ae56703dd6f2a0b9e6b4",
+    measurementId: "G-3DWSF7Y2CL"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+ const db = getDatabase();
+// ----------------------------------------
+
+// Insert new data
+var submitBtn = document.getElementById("submitBtn");
+var selectBtn = document.getElementById("selectBtn");
+var deleteBtn = document.getElementById("deleteBtn");
+var updateBtn = document.getElementById("updateBtn");
+
+submitBtn.addEventListener("click", InsertData);
+selectBtn.addEventListener("click", selectData);
+deleteBtn.addEventListener("click", deleteData);
+updateBtn.addEventListener("click", updateData);
+
+var name = document.getElementById("name");
+var email = document.getElementById("email");
+var message = document.getElementById("message");
+var rollno = document.getElementById("rollno");
+
+function InsertData() {
+    event.preventDefault();
+    console.log("working");
+  set(ref(db,"TheStudent/"+rollno.value),{
+    name: name.value,
+    RollNo: rollno.value,
+    email: email.value,
+    message: message.value
+  })
+  .then(()=>{
+    alert("data store successfully")
+  }).catch((err)=>{
+    alert("unsuccessfull, error"+ err)
+  })
+  name.value= "",
+    rollno.value ="",
+    email.value= "",
+    message.value= ""
+};
+
+// ---------------------------------------------
+
+        // Select data 
+
+    function selectData(){
+      const dbref = ref(db);
+    
+      get(child(dbref,"TheStudent/"+rollno.value)).then((snapshot)=>{
+        if(snapshot.exists()){
+         name.value = snapshot.val().name;
+            // rollno.value = snapshot.val().RollNo;
+            email.value= snapshot.val().email;
+            message.value = snapshot.val().message;
+        }
+        else{
+            alert("No data found")
+        }
+      })
+      .catch((err)=>{
+    alert("unsuccessfull, error"+ err)
+  })
+    }
+
+// ----------------------------------------------
+
+        // Update function 
+
+
+        function updateData(){
+            set(ref(db,"TheStudent/"+rollno.value),{
+                name: name.value,
+                RollNo: rollno.value,
+                email: email.value,
+                message: message.value
+            })
+            .then(()=>{
+                alert("data update successfully")
+            }).catch((err)=>{
+                alert("unsuccessfull, error"+ err)
+            })
+            name.value= "",
+                rollno.value ="",
+                email.value= "",
+                message.value= ""
+        }
+
+        // -------------------------------------
+
+        function deleteData(){
+            remove(ref(db,"TheStudent/"+rollno.value))
+            .then(()=>{
+                alert("data Delete successfully")
+            }).catch((err)=>{
+                alert("unsuccessfull, error"+ err)
+            })
+            name.value= "",
+                rollno.value ="",
+                email.value= "",
+                message.value= ""
+        }
+        
+      </script>
+</body>
+</html>
